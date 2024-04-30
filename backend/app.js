@@ -5,6 +5,7 @@ const cors = require('cors');
 // Configura la aplicación Express
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 
 // Configura la conexión Sequelize (base de datos SQLite en memoria)
@@ -39,7 +40,12 @@ async function inicializarBaseDeDatos() {
 
 // Endpoint para obtener los museos
 app.get('/museos', async (req, res) => {
-   //Agregar codigo
+    try{
+        const museos = await Museo.findAll();
+        res.status(200).json(museos);
+    }catch(err){
+        res.status(500).json({error: err});
+    }
 });
 
 // Inicia el servidor
