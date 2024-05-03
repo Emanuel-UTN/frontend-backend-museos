@@ -1,5 +1,5 @@
 const express = require('express');
-const { Sequelize, DataTypes } = require('sequelize');
+const { Sequelize, DataTypes, Op } = require('sequelize');
 const cors = require('cors');
 
 // Configura la aplicación Express
@@ -43,6 +43,21 @@ app.get('/museos', async (req, res) => {
     try{
         const museos = await Museo.findAll();
         res.status(200).json(museos);
+    }catch(err){
+        res.status(500).json({error: err});
+    }
+});
+
+app.get('/museos/filtro/:filtro', async (req, res) => {
+    try{
+        const filtro = req.params.filtro;
+
+        const museos = await Museo.findAll({where:{
+            nombre:{
+                [Op.like]: `%${filtro}%`
+            }
+        }});
+        res.status(200).json(museos)
     }catch(err){
         res.status(500).json({error: err});
     }
